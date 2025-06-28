@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EST#15</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- Motor de Diseño: Variables y Temas --- */
+        :root {
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            /* Tema Claro (Default) */
+            --bg-main: #f4f6f9; --bg-surface: #ffffff; --text-primary: #18181b;
+            --text-secondary: #52525b; --border-color: #e4e4e7; --shadow-color: 220 13% 69%;
+            --brand-blue: #3bb2f3; --brand-teal: #d713c1f7; --brand-red: #b91c1c; 
+            --brand-green: #15803d; --brand-zika: #854d0e; --brand-chik: #581c87;
+        }
+
+        html.dark-mode {
+            /* Tema Oscuro */
+            --bg-main: #0a0a0a; --bg-surface: #18181b; --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa; --border-color: #27272a; --shadow-color: 240 5% 3.9%;
+            --brand-blue: #81b4f2; --brand-teal: #f908e5; --brand-red: #f87171; 
+            --brand-green: #4ade80; --brand-zika: #fBBF24; --brand-chik: #c084fc;
+        }
+
+        /* --- Estilos Base y Animaciones --- */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main); color: var(--text-primary);
+            transition: background-color 0.4s var(--ease-out-expo), color 0.4s var(--ease-out-expo);
+        }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+        .section { padding: 5rem 1.5rem; overflow: hidden; border-bottom: 1px solid var(--border-color); }
+        main .section:last-child { border-bottom: none; }
+        .section-title {
+            font-family: 'Plus Jakarta Sans', sans-serif; font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 800; text-align: center; margin-bottom: 3rem; line-height: 1.2;
+        }
+        .section-title span { color: var(--brand-teal); }
+        .section-subtitle {
+            text-align: center;
+            max-width: 700px;
+            margin: -2rem auto 3rem;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 1s var(--ease-out-expo), transform 1s var(--ease-out-expo); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        /* --- Header y Hero --- */
+        .header {
+            background-color: color-mix(in srgb, var(--bg-surface) 80%, transparent);
+            backdrop-filter: blur(12px); padding: 1rem 1.5rem; position: sticky;
+            top: 0; z-index: 1000; border-bottom: 1px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center;
+            transition: all 0.4s var(--ease-out-expo);
+        }
+        .logo { font-family: 'Plus Jakarta Sans'; font-weight: 800; font-size: 1.5rem; color: var(--brand-blue); }
+        .logo strong { color: var(--brand-teal); }
+        #dark-mode-toggle { background: transparent; border: none; cursor: pointer; color: var(--text-secondary); padding: 0; display: flex; align-items: center; }
+        #dark-mode-toggle svg { width: 24px; height: 24px; }
+        .hero { padding: 6rem 0; text-align: center; }
+        .hero h1 { font-size: clamp(3rem, 7vw, 5rem); font-weight: 800; line-height: 1.1; margin-bottom: 1rem; }
+        .hero .subtitle { font-size: clamp(1.1rem, 2vw, 1.25rem); max-width: 600px; margin: 0 auto; color: var(--text-secondary); }
+
+        /* --- Bento Grid --- */
+        .bento-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+        .bento-item {
+            background-color: var(--bg-surface); padding: 1.5rem; border-radius: 16px;
+            border: 1px solid var(--border-color); box-shadow: 0 4px 60px -15px hsl(var(--shadow-color) / 0.1);
+            display: flex; flex-direction: column; justify-content: space-between;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .bento-item:hover { transform: translateY(-5px); box-shadow: 0 10px 40px -15px hsl(var(--shadow-color) / 0.2); }
+        .bento-item .icon-container { color: var(--brand-teal); width: 48px; height: 48px; margin-bottom: 1rem; }
+        .bento-item h4 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .bento-item-1 { grid-column: 1 / 3; }
+        .bento-item-2 { grid-column: 3; grid-row: 1 / 3; }
+        .bento-item-3 { grid-column: 1 / 2; grid-row: 2; }
+        
+        /* --- Comparativa de Enfermedades --- */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .disease-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .disease-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 40px -15px hsl(var(--shadow-color) / 0.2);
+        }
+        .disease-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid;
+        }
+        .dengue-title { border-color: var(--brand-red); }
+        .zika-title { border-color: var(--brand-zika); }
+        .chik-title { border-color: var(--brand-chik); }
+        .disease-card ul { list-style: none; padding: 0; }
+        .disease-card li { margin-bottom: 0.75rem; border-bottom: 1px dashed var(--border-color); padding-bottom: 0.75rem; }
+        .disease-card li:last-child { border-bottom: none; }
+
+        /* --- Ciclo de Vida del Mosquito --- */
+        .lifecycle-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            position: relative;
+            margin-top: 2rem;
+        }
+        .lifecycle-container::before {
+            content: '';
+            position: absolute;
+            top: 48px;
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            background-image: linear-gradient(to right, var(--border-color) 50%, transparent 50%);
+            background-size: 16px 4px;
+            z-index: -1;
+        }
+        .lifecycle-stage { text-align: center; }
+        .lifecycle-stage .icon-container {
+            background: var(--bg-surface);
+            border: 3px solid var(--border-color);
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 1rem;
+            color: var(--brand-blue);
+        }
+        .lifecycle-stage h4 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .lifecycle-stage p { color: var(--text-secondary); }
+        .lifecycle-stage.reveal:nth-child(2) { transition-delay: 0.2s; }
+        .lifecycle-stage.reveal:nth-child(3) { transition-delay: 0.4s; }
+        .lifecycle-stage.reveal:nth-child(4) { transition-delay: 0.6s; }
+        
+        /* --- Verificador de Síntomas --- */
+        #checker-form {
+            background: var(--bg-surface); padding: 2.5rem; border-radius: 16px;
+            max-width: 800px; margin: 0 auto; border: 1px solid var(--border-color);
+        }
+        #checker-form fieldset { border: none; margin-bottom: 1.5rem; }
+        #checker-form legend {
+            font-family: 'Plus Jakarta Sans'; font-size: 1.5rem; font-weight: 700;
+            margin-bottom: 1rem; color: var(--brand-blue);
+        }
+        #checker-form .legend-alert { color: var(--brand-red); }
+        .checkbox-container { display: flex; align-items: center; margin-bottom: 1rem; }
+        .checkbox-container input { width: 1.5em; height: 1.5em; margin-right: 1rem; accent-color: var(--brand-blue); }
+        .checkbox-container label { font-size: 1.1rem; }
+        #checker-result {
+            padding: 1.5rem; border-radius: 12px; margin-top: 1rem; text-align: center;
+            font-size: 1.2rem; font-weight: 500; transition: all 0.3s ease;
+        }
+        #checker-result.info { background-color: color-mix(in srgb, var(--brand-blue) 10%, transparent); border: 1px solid var(--brand-blue); }
+        #checker-result.warning { background-color: color-mix(in srgb, orange 15%, transparent); border: 1px solid orange; }
+        #checker-result.danger { background-color: color-mix(in srgb, var(--brand-red) 15%, transparent); border: 1px solid var(--brand-red); }
+
+        /* --- Pautas de Tratamiento --- */
+        .treatment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .treatment-grid .card { padding: 1.5rem; border-radius: 16px; border: 1px solid; }
+        .card-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+        .card-header h3 { font-size: 1.8rem; }
+        .card-header .icon-container { margin-bottom: 0; }
+        .treatment-grid ul { list-style-position: inside; padding-left: 0.5rem; }
+        .treatment-grid li { margin-bottom: 0.5rem; }
+        .do-card { border-color: var(--brand-green); background-color: color-mix(in srgb, var(--brand-green) 5%, transparent); }
+        .do-card .icon-container { color: var(--brand-green); }
+        .dont-card { border-color: var(--brand-red); background-color: color-mix(in srgb, var(--brand-red) 5%, transparent); }
+        .dont-card .icon-container { color: var(--brand-red); }
+
+        /* --- Buscador de Clínicas --- */
+        .finder-container { max-width: 800px; margin: 0 auto; }
+        #clinic-search {
+            width: 100%; padding: 1rem; font-size: 1.1rem; border-radius: 12px;
+            border: 1px solid var(--border-color); background: var(--bg-surface);
+            margin-bottom: 1.5rem; transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        #clinic-search:focus { outline: none; border-color: var(--brand-blue); box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-blue) 20%, transparent); }
+        #clinic-list { min-height: 50px; }
+        .clinic-item {
+            background: var(--bg-surface); padding: 1rem; border-radius: 8px;
+            margin-bottom: 0.75rem; border: 1px solid var(--border-color);
+            transition: border-color 0.3s ease;
+        }
+        .clinic-item:hover { border-color: var(--brand-teal); }
+        .placeholder-text { text-align:center; color: var(--text-secondary); padding-top: 1rem; }
+
+        /* --- FAQ Acordeón --- */
+        .faq-container { max-width: 800px; margin: 0 auto; }
+        .faq-item { border-bottom: 1px solid var(--border-color); }
+        .faq-item summary {
+            font-family: 'Plus Jakarta Sans'; font-weight: 700; font-size: 1.2rem;
+            padding: 1.5rem 0.5rem; cursor: pointer; list-style: none;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .faq-item summary::-webkit-details-marker { display: none; }
+        .faq-item summary::after {
+            content: '+'; font-size: 2rem; color: var(--brand-teal);
+            transition: transform 0.3s var(--ease-out-expo);
+        }
+        .faq-item[open] > summary { color: var(--brand-teal); }
+        .faq-item[open] > summary::after { transform: rotate(45deg); }
+        .faq-content { padding: 0 0.5rem 1.5rem; color: var(--text-secondary); }
+
+        /* --- Media Queries --- */
+        @media (max-width: 900px) {
+            .lifecycle-container { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+            .lifecycle-container::before { display: none; }
+        }
+        @media (max-width: 768px) {
+            .bento-grid, .treatment-grid, .comparison-grid { grid-template-columns: 1fr; }
+            .bento-item { grid-column: auto !important; grid-row: auto !important; }
+        }
+        @media (max-width: 500px) {
+            .lifecycle-container { grid-template-columns: 1fr; }
+        }
+
+        /* --- Footer --- */
+        .footer { text-align: center; padding: 4rem 1.5rem; background: var(--bg-surface); }
+        .footer p { color: var(--text-secondary); }
+        .footer-logo { margin-top: 1rem; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">DGE<strong>MX</strong></div>
+        <div class="header-controls">
+            <button id="dark-mode-toggle" title="Cambiar tema"></button>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero container reveal">
+            <h1>Plataforma de Acción<br>contra el Dengue</h1>
+            <p class="subtitle">Herramientas, información y prevención para cuidar a tu comunidad en México.</p>
+        </section>
+
+        <section id="prevencion" class="section">
+            <div class="container">
+                <h2 class="section-title reveal">Prevención <span>Activa</span></h2>
+                <div class="bento-grid">
+                    <div class="bento-item bento-item-1 reveal"><div class="icon-container" id="icon-house"></div><div><h4>Lava, Tapa, Voltea y Tira</h4><p>La regla de oro. Elimina cualquier recipiente que acumule agua en tu patio y azotea.</p></div></div>
+                    <div class="bento-item bento-item-2 reveal"><div class="icon-container" id="icon-shield"></div><div><h4>Protégete de Picaduras</h4><p>Usa repelente (con DEET), viste ropa que cubra la piel y utiliza mosquiteros.</p></div></div>
+                    <div class="bento-item bento-item-3 reveal"><div class="icon-container" id="icon-alert"></div><div><h4>Conoce los Síntomas</h4><p>Saber identificar los signos de alarma puede salvar vidas. No ignores el dolor abdominal.</p></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="comparison" class="section">
+            <div class="container">
+                <h2 class="section-title reveal">Dengue, Zika o <span>Chikungunya</span>?</h2>
+                <p class="section-subtitle reveal">Estas tres enfermedades son transmitidas por el mismo mosquito y comparten síntomas. Aprende a diferenciarlos.</p>
+                <div class="comparison-grid">
+                    <div class="disease-card reveal">
+                        <h3 class="dengue-title">Dengue</h3>
+                        <ul>
+                            <li><strong>Fiebre:</strong> Alta (40°C)</li>
+                            <li><strong>Dolor de cabeza:</strong> Intenso, detrás de los ojos</li>
+                            <li><strong>Dolor muscular/articular:</strong> Muy intenso ("Fiebre quebrantahuesos")</li>
+                            <li><strong>Sarpullido:</strong> Común</li>
+                            <li><strong>Síntoma Clave:</strong> Dolor retroocular y sangrados</li>
+                        </ul>
+                    </div>
+                    <div class="disease-card reveal">
+                        <h3 class="zika-title">Zika</h3>
+                        <ul>
+                            <li><strong>Fiebre:</strong> Baja o ausente</li>
+                            <li><strong>Dolor de cabeza:</strong> Moderado</li>
+                            <li><strong>Dolor muscular/articular:</strong> Moderado</li>
+                            <li><strong>Sarpullido:</strong> Muy común, con picazón</li>
+                            <li><strong>Síntoma Clave:</strong> Conjuntivitis (ojos rojos)</li>
+                        </ul>
+                    </div>
+                    <div class="disease-card reveal">
+                        <h3 class="chik-title">Chikungunya</h3>
+                        <ul>
+                            <li><strong>Fiebre:</strong> Alta (>39°C)</li>
+                            <li><strong>Dolor de cabeza:</strong> Presente</li>
+                            <li><strong>Dolor muscular/articular:</strong> Severo, incapacitante, en múltiples articulaciones</li>
+                            <li><strong>Sarpullido:</strong> Frecuente</li>
+                            <li><strong>Síntoma Clave:</strong> Dolor articular extremo y agudo</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="lifecycle" class="section">
+            <div class="container">
+                <h2 class="section-title reveal">El Ciclo del <span>Vector</span></h2>
+                <p class="section-subtitle reveal">El *Aedes aegypti* completa su ciclo de vida en 7 a 10 días, siempre en agua estancada. Conocerlo es clave para la prevención.</p>
+                <div class="lifecycle-container">
+                    <div class="lifecycle-stage reveal">
+                        <div class="icon-container" id="icon-egg"></div>
+                        <h4>1. Huevo</h4>
+                        <p>Depositados en paredes de recipientes con agua.</p>
+                    </div>
+                    <div class="lifecycle-stage reveal">
+                        <div class="icon-container" id="icon-larva"></div>
+                        <h4>2. Larva</h4>
+                        <p>Eclosionan y viven en el agua, alimentándose.</p>
+                    </div>
+                    <div class="lifecycle-stage reveal">
+                        <div class="icon-container" id="icon-pupa"></div>
+                        <h4>3. Pupa</h4>
+                        <p>Etapa de transformación, aún en el agua.</p>
+                    </div>
+                    <div class="lifecycle-stage reveal">
+                        <div class="icon-container" id="icon-mosquito"></div>
+                        <h4>4. Adulto</h4>
+                        <p>El mosquito emerge, vuela y está listo para picar.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="symptom-checker" class="section">
+            <div class="container">
+                <h2 class="section-title reveal">Verificador de <span>Síntomas</span></h2>
+                <form id="checker-form" class="reveal">
+                    <fieldset>
+                        <legend>Síntomas Comunes</legend>
+                        <div class="checkbox-container"><input type="checkbox" id="s1" data-type="common"><label for="s1">Fiebre alta (+38°C)</label></div>
+                        <div class="checkbox-container"><input type="checkbox" id="s2" data-type="common"><label for="s2">Dolor de cabeza intenso</label></div>
+                        <div class="checkbox-container"><input type="checkbox" id="s3" data-type="common"><label for="s3">Dolor detrás de los ojos</label></div>
+                        <div class="checkbox-container"><input type="checkbox" id="s4" data-type="common"><label for="s4">Dolores musculares y articulares</label></div>
+                    </fieldset>
+                    <fieldset>
+                        <legend class="legend-alert">⚠️ Signos de Alarma</legend>
+                        <div class="checkbox-container"><input type="checkbox" id="a1" data-type="alarm"><label for="a1">Dolor abdominal intenso y continuo</label></div>
+                        <div class="checkbox-container"><input type="checkbox" id="a2" data-type="alarm"><label for="a2">Vómitos persistentes o con sangre</label></div>
+                        <div class="checkbox-container"><input type="checkbox" id="a3" data-type="alarm"><label for="a3">Sangrado de encías o nariz</label></div>
+                    </fieldset>
+                    <div id="checker-result" class="info">Selecciona tus síntomas para recibir una recomendación.</div>
+                </form>
+            </div>
+        </section>
+
+        <section id="treatment" class="section">
+            <div class="container">
+                <h2 class="section-title reveal">Manejo de <span>Síntomas</span></h2>
+                <div class="treatment-grid">
+                    <div class="card do-card reveal">
+                        <div class="card-header"><div class="icon-container" id="icon-check"></div><h3>Qué Hacer</h3></div>
+                        <ul>
+                            <li><strong>Reposo Absoluto:</strong> Descansar es fundamental para la recuperación.</li>
+                            <li><strong>Hidratación Intensa:</strong> Beber abundantes líquidos (agua, suero oral).</li>
+                            <li><strong>Control de Fiebre:</strong> Usar únicamente Paracetamol según indicación médica.</li>
+                        </ul>
+                    </div>
+                    <div class="card dont-card reveal">
+                        <div class="card-header"><div class="icon-container" id="icon-x"></div><h3>Qué NO Hacer</h3></div>
+                        <ul>
+                            <li><strong>NO Automedicarse:</strong> Especialmente con antiinflamatorios.</li>
+                            <li><strong>Evitar AINEs:</strong> No tomar Ibuprofeno, Aspirina o Naproxeno.</li>
+                            <li><strong>Riesgo de Hemorragia:</strong> Estos medicamentos pueden aumentar el riesgo de sangrados.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="clinic-finder" class="section">
+            <div class="container">
+                <h2 class="section-title reveal">Encuentra un Centro de <span>Salud</span></h2>
+                <div class="finder-container reveal">
+                    <input type="text" id="clinic-search" placeholder="Escribe tu ciudad o el nombre del hospital...">
+                    <div id="clinic-list"><p class="placeholder-text">Los resultados de tu búsqueda aparecerán aquí.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" class="section">
+            <div class="container">
+                <h2 class="section-title reveal">Preguntas <span>Frecuentes</span></h2>
+                <div class="faq-container reveal">
+                    <details class="faq-item">
+                        <summary>¿Me puede dar dengue más de una vez?</summary>
+                        <div class="faq-content"><p>Sí. Existen 4 serotipos del virus. Infectarse con uno te da inmunidad de por vida solo contra ese, pero una segunda infección con un serotipo diferente aumenta el riesgo de desarrollar dengue grave.</p></div>
+                    </details>
+                    <details class="faq-item">
+                        <summary>¿Existe una vacuna contra el dengue en México?</summary>
+                        <div class="faq-content"><p>Sí, existen vacunas aprobadas en México, como Dengvaxia y Qdenga. Su recomendación depende de factores como la edad y si has tenido dengue previamente. Consulta a tu médico para saber si eres candidato.</p></div>
+                    </details>
+                    <details class="faq-item">
+                        <summary>¿El dengue se contagia de persona a persona?</summary>
+                        <div class="faq-content"><p>No. El dengue solo se transmite a través de la picadura de un mosquito infectado. No hay contagio directo entre personas.</p></div>
+                    </details>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>Aplicación desarrollada con fines educativos. Ante cualquier síntoma, consulta a un profesional de la salud.</p>
+        <div class="logo footer-logo">FSOCIETY-<strong>BIT</strong> &copy; 2025</div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- DEFINICIÓN DE ICONOS SVG ---
+            const icons = {
+                sun: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`,
+                moon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`,
+                house: `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>`,
+                shield: `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`,
+                alert: `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" x2="12" y1="9" y2="13"></line><line x1="12" x2="12.01" y1="17" y2="17"></line></svg>`,
+                check: `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
+                x: `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`,
+                egg: `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-45 12 12)"></ellipse></svg>`,
+                larva: `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 19a7 7 0 1 0-1.4-13.8"></path><path d="M10.3 19.3c-2.5 1.7-4.1 4-4.8 6.2"></path><path d="m14 10-2.5 2.5"></path><path d="m18 6-2.5 2.5"></path></svg>`,
+                pupa: `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12A4.5 4.5 0 1 0 7.5 7.5c0 3.38 4.5 9.5 4.5 9.5s4.5-6.12 4.5-9.5A4.5 4.5 0 0 0 12 12z"></path><path d="M12 12a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"></path></svg>`,
+                mosquito: `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 9 6 6"></path><path d="m13 17 6-6"></path><path d="M3.78 19.46a2.08 2.08 0 0 0 2.94 0l1.63-1.62a1 1 0 0 1 1.41 0l.71.71a1 1 0 0 0 1.41 0l.71-.71a1 1 0 0 1 1.41 0l.71.71a1 1 0 0 0 1.41 0l.71-.71a1 1 0 0 1 1.41 0l1.63 1.62a2.08 2.08 0 0 0 2.94 0"></path><path d="M9.59 7.41a4.95 4.95 0 0 0-4.18 7.3"></path><path d="m14.5 12.5 4.5-4.5"></path></svg>`
+            };
+
+            // --- BASE DE DATOS DE CLÍNICAS (SIMULADA) ---
+            const clinics = [
+                { name: "Hospital General de México Dr. Eduardo Liceaga", city: "CDMX" }, { name: "Centro Médico Nacional Siglo XXI", city: "CDMX" },
+                { name: "Hospital Civil de Guadalajara Fray Antonio Alcalde", city: "Jalisco" }, { name: "Hospital San Javier", city: "Jalisco" },
+                { name: "Hospiten Cancún", city: "Quintana Roo" }, { name: "Hospital Galenia", city: "Quintana Roo" },
+                { name: "Hospital Star Médica Mérida", city: "Yucatán" }, { name: "Clínica de Mérida", city: "Yucatán" },
+                { name: "Hospital Zambrano Hellion TecSalud", city: "Nuevo León" }, { name: "Doctors Hospital", city: "Nuevo León" }
+            ];
+
+            // --- INICIALIZACIÓN DE MÓDULOS ---
+            function initApp() {
+                // Módulo 1: Inyección de Iconos
+                for (const id in icons) {
+                    const element = document.getElementById(`icon-${id}`);
+                    if (element) element.innerHTML = icons[id];
+                }
+                
+                // Módulo 2: Modo Oscuro
+                const toggle = document.getElementById('dark-mode-toggle');
+                let isDark = localStorage.getItem('theme') === 'dark';
+                const applyTheme = () => {
+                    document.documentElement.classList.toggle('dark-mode', isDark);
+                    toggle.innerHTML = isDark ? icons.sun : icons.moon;
+                };
+                applyTheme();
+                toggle.addEventListener('click', () => {
+                    isDark = !isDark;
+                    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                    applyTheme();
+                });
+
+                // Módulo 3: Animaciones al Hacer Scroll
+                const observer = new IntersectionObserver(entries => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) entry.target.classList.add('visible');
+                    });
+                }, { threshold: 0.1 });
+                document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+                
+                // Módulo 4: Verificador de Síntomas
+                const checkerForm = document.getElementById('checker-form');
+                if (checkerForm) {
+                    checkerForm.addEventListener('change', () => {
+                        const checkedBoxes = checkerForm.querySelectorAll('input[type="checkbox"]:checked');
+                        const resultDiv = document.getElementById('checker-result');
+                        let commonCount = 0, alarmCount = 0;
+                        checkedBoxes.forEach(checkbox => {
+                            if (checkbox.dataset.type === 'common') commonCount++;
+                            else if (checkbox.dataset.type === 'alarm') alarmCount++;
+                        });
+                        if (alarmCount > 0) {
+                            resultDiv.className = 'checker-result danger';
+                            resultDiv.innerHTML = `<strong>¡Atención!</strong> Has seleccionado ${alarmCount} signo(s) de alarma. Busca atención médica de inmediato.`;
+                        } else if (commonCount >= 2) {
+                            resultDiv.className = 'checker-result warning';
+                            resultDiv.innerHTML = `<strong>Precaución:</strong> Tienes ${commonCount} síntomas compatibles con dengue. Mantente hidratado, en reposo y vigila cualquier signo de alarma. Considera consultar a un médico.`;
+                        } else {
+                            resultDiv.className = 'checker-result info';
+                            resultDiv.innerHTML = 'Selecciona tus síntomas para recibir una recomendación.';
+                        }
+                    });
+                }
+                //bueno a medio codigo les digo que Elsy fue mi diseñadora :) GRACIAS ELSY 👍
+                // Módulo 5: Buscador de Clínicas
+                const searchInput = document.getElementById('clinic-search');
+                const listEl = document.getElementById('clinic-list');
+                if (searchInput) {
+                    searchInput.addEventListener('input', e => {
+                        const query = e.target.value.toLowerCase().trim();
+                        if (!query) {
+                            listEl.innerHTML = `<p class="placeholder-text">Los resultados de tu búsqueda aparecerán aquí.</p>`;
+                            return;
+                        }
+                        const filteredClinics = clinics.filter(c => c.name.toLowerCase().includes(query) || c.city.toLowerCase().includes(query));
+                        if (filteredClinics.length > 0) {
+                            listEl.innerHTML = filteredClinics.map(c => `<div class="clinic-item"><strong>${c.name}</strong><br><small>${c.city}</small></div>`).join('');
+                        } else {
+                            listEl.innerHTML = `<p class="placeholder-text">No se encontraron clínicas para "${query}".</p>`;
+                        }
+                    });
+                }
+            }
+
+            // Ejecutar la aplicación
+            initApp();
+        });
+    </script>
+</body>
+</html>
